@@ -95,8 +95,9 @@ class IPRateLimiter:
         if now - self.last_cleanup > self.cleanup_interval:
             with self.lock:
                 # Remove buckets that are at full capacity (idle)
+                # Create a copy of keys to avoid modifying dict during iteration
                 idle_ips = [
-                    ip for ip, bucket in self.buckets.items()
+                    ip for ip, bucket in list(self.buckets.items())
                     if bucket.get_tokens() >= self.capacity
                 ]
                 for ip in idle_ips:

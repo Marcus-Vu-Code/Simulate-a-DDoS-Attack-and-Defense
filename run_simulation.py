@@ -95,10 +95,13 @@ def run_attack(attacker, target_ip, count=500, port=80):
     """Run the SYN flood attack from the attacker host."""
     info(f'*** Running SYN flood attack: {count} packets to {target_ip}:{port}\n')
     
+    # Get the current working directory for the script path
+    script_dir = os.path.dirname(os.path.abspath(__file__))
+    
     # Create attack script on attacker
     attack_script = f'''
 import sys
-sys.path.insert(0, '/home/runner/work/Simulate-a-DDoS-Attack-and-Defense/Simulate-a-DDoS-Attack-and-Defense')
+sys.path.insert(0, '{script_dir}')
 from attack.syn_flood import syn_flood
 syn_flood("{target_ip}", {port}, {count}, verbose=True)
 '''
@@ -322,10 +325,7 @@ Examples:
         return
     
     # Other modes need root
-    if os.geteuid() != 0:
-        print("Error: This mode requires root privileges.")
-        print("Run with: sudo python run_simulation.py")
-        sys.exit(1)
+    check_root()
     
     # Load Mininet modules
     load_mininet()
